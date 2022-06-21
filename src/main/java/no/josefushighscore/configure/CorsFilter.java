@@ -24,6 +24,7 @@ public class CorsFilter implements Filter {
         LOG.debug("CORSFILTER INIT");
     }
 
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
