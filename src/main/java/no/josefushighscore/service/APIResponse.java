@@ -1,24 +1,28 @@
-package no.josefushighscore.util;
+package no.josefushighscore.service;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
+@Service
 public class APIResponse {
 
-    private Integer status;
+    private HttpStatus status;
     private Object data;
     private Object error;
+    private Object message;
 
     public APIResponse() {
-        this.status = HttpStatus.OK.value();
+        this.status = HttpStatus.OK;
         this.data = data;
         this.error = error;
+        this.message = message;
     }
 
-    public Integer getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(HttpStatus status) {
         this.status = status;
     }
 
@@ -36,5 +40,13 @@ public class APIResponse {
 
     public void setError(Object error) {
         this.error = error;
+    }
+
+    public Object getMessage() {
+        return message;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
     }
 }
