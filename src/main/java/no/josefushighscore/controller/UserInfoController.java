@@ -21,6 +21,7 @@ public class UserInfoController {
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
+        model.put("isAccountNonExpired", userDetails.isAccountNonExpired());
         model.put("roles", userDetails.getAuthorities()
                 .stream()
                 .map(a -> ((GrantedAuthority) a).getAuthority())

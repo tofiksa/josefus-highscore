@@ -1,6 +1,7 @@
 package no.josefushighscore.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.tomcat.jni.User;
 
 public class UserDto {
 
@@ -27,6 +28,10 @@ public class UserDto {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
+    }
+
+    public static User builder() {
+        return new User();
     }
 
     public String getUsername() {

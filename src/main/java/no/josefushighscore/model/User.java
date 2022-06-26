@@ -25,13 +25,25 @@ import static java.util.stream.Collectors.toList;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name="`user_id`")
+    Long userId;
 
     @NotEmpty
     private String username;
 
     @NotEmpty
     private String password;
+
+    @NotEmpty
+    private String email;
+
+    @NotEmpty
+    private String firstname;
+
+    @NotEmpty
+    private String lastname;
+
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -65,11 +77,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    private String firstname;
-
-    private String lastname;
-
-    private String email;
 
     public List<String> getRoles() {
         return roles;
