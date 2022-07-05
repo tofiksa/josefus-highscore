@@ -7,7 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
-@Component
+@Service
 public class JwtTokenProvider {
 
     @Autowired JwtProperties jwtProperties;
@@ -42,7 +42,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)//
                 .setIssuedAt(now)//
                 .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secretKey)//
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
@@ -58,11 +58,11 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest req) {
         Enumeration<String> headerNames = ((HttpServletRequest) req).getHeaderNames();
 
-        /*while(headerNames.hasMoreElements()) {
+        while(headerNames.hasMoreElements()) {
             System.out.println("HEADER: " + headerNames.nextElement());
-        }*/
+        }
 
-        //System.out.println("Referer: " + req.getHeader("Referer"));
+        System.out.println("Referer: " + req.getHeader("Referer"));
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());

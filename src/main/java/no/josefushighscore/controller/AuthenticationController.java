@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class AuthenticationController {
 
     @Autowired
-    private UserLoginService loginService;
+    UserLoginService loginService;
 
     @PreAuthorize("hasRole('ANONYMOUS')")
     @PostMapping("/signin")
