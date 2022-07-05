@@ -1,5 +1,6 @@
 package no.josefushighscore.service;
 
+import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.exception.EmailExistsException;
 import no.josefushighscore.model.User;
 import no.josefushighscore.register.UserRegister;
@@ -9,13 +10,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-@Service
+@Component
 public class UserLoginService {
     @Autowired
     UserRegister users;
@@ -28,6 +29,22 @@ public class UserLoginService {
 
 
     public Object login(User loginRequestDTO) {
+
+        String username = loginRequestDTO.getUsername();
+        String pwd = loginRequestDTO.getPassword();
+
+        String token = jwtTokenProvider.createToken(username, this.users.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
+
+        Map<Object, Object> model = new HashMap<>();
+        model.put("username", username);
+        model.put("token", token);
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, pwd));
+
+        return model;
+    }
+
+    public Object login(UserDto loginRequestDTO) {
 
         String username = loginRequestDTO.getUsername();
         String pwd = loginRequestDTO.getPassword();
@@ -64,7 +81,31 @@ public class UserLoginService {
         return user;
     }
 
+    public UserDto registerNewUserAccount(UserDto userDto) {
+
+        User user = new User();
+
+        if (emailExist(userDto.getEmail())) {
+            throw new EmailExistsException("Epost finnes allerede!");
+        } else {
+
+            user.setUsername(user.getUsername());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setEmail(user.getEmail());
+            user.setFirstname(user.getFirstname());
+            user.setLastname(user.getLastname());
+            List<String> roles = new ArrayList<>();
+            roles.add("ROLE_USER");
+
+            user.setRoles(roles);
+
+            users.save(user);
+        }
+        return userDto;
+    }
+
     public boolean emailExist(String email) {
         return users.findByEmail(email).isPresent();
     }
+
 }
