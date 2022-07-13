@@ -2,7 +2,9 @@ package no.josefushighscore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.josefushighscore.configure.SecurityTestConfiguration;
+import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
+import no.josefushighscore.register.UserRegister;
 import no.josefushighscore.security.jwt.JwtTokenProvider;
 import no.josefushighscore.service.UserLoginService;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
@@ -21,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @WebMvcTest(AuthenticationController.class)
 @Import(SecurityTestConfiguration.class)
@@ -31,6 +35,9 @@ public class AuthenticationTestController {
 
     @MockBean
     JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    UserRegister userRegister;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,14 +63,15 @@ public class AuthenticationTestController {
 
     @Test
     @DisplayName("Test signin")
-    @WithAnonymousUser
+    @WithUserDetails("basicUser")
     public void testSigninAndGetJWTToken() throws Exception {
 
-        UserDto userDto = new UserDto("testuser","testy",null,null,null);
-        when(userLoginService.login(any(UserDto.class))).thenReturn(userDto);
+        LoginUserDto userDto = new LoginUserDto("basicUser", "setuppassword","testjwt");
+
+        when(userLoginService.login(any(LoginUserDto.class))).thenReturn(userDto);
 
         mockMvc.perform(post("/auth/signin").contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(userDto))
+                        .content(new ObjectMapper().writeValueAsString(userDto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

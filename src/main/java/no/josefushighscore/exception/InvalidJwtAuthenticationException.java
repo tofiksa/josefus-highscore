@@ -1,15 +1,10 @@
 package no.josefushighscore.exception;
-import org.springframework.security.core.AuthenticationException;
 
-public class InvalidJwtAuthenticationException extends AuthenticationException {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -761503632186596342L;
-
-    public InvalidJwtAuthenticationException(String e) {
-        super(e);
+public class InvalidJwtAuthenticationException extends RuntimeException {
+    public InvalidJwtAuthenticationException(String message) {
+        super(message);
     }
+
 }
 
 
