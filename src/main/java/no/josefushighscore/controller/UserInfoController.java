@@ -1,7 +1,8 @@
 package no.josefushighscore.controller;
 
+import no.josefushighscore.exception.InvalidJwtAuthenticationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +18,10 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController()
 public class UserInfoController {
 
-    @SuppressWarnings("rawtypes")
+
+    @Secured("ROLE_USER")
     @GetMapping("/me")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("isAccountNonExpired", userDetails.isAccountNonExpired());

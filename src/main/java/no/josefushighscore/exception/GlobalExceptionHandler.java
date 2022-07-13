@@ -1,13 +1,19 @@
 package no.josefushighscore.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import no.josefushighscore.service.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+import javax.servlet.ServletException;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
@@ -34,8 +40,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleAccessDeniedException(AuthenticationException e){
 
         APIResponse apiResponse = new APIResponse();
-        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setStatus(HttpStatus.BAD_REQUEST);
         apiResponse.setError("Wrong username/password!");
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleBadCredentialsException(BadCredentialsException e){
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setError("Wrong password!");
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleUsernameNotFoundException(UsernameNotFoundException e) {
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setError("Username not found!");
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -49,6 +74,49 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+    @ExceptionHandler
+    public ResponseEntity handleSignatureException(SignatureException e){
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setError("JWT signature does not match locally computed signature. " +
+                "JWT validity cannot be asserted and should not be trusted.");
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleServletException(ServletException e){
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setError(e.getMessage());
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleInvalidJwtAuthenticationException(InvalidJwtAuthenticationException e){
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setError(e.getMessage());
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleExpiredJwtException(ExpiredJwtException e){
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setError(e.getMessage());
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+
 
 }
 

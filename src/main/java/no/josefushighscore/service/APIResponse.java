@@ -13,9 +13,12 @@ public class APIResponse {
 
     public APIResponse() {
         this.status = HttpStatus.OK;
-        this.data = data;
-        this.error = error;
+    }
+
+    public APIResponse(HttpStatus httpStatus, String message, String s) {
         this.message = message;
+        this.error = s;
+        this.setStatus(httpStatus);
     }
 
     public HttpStatus getStatus() {

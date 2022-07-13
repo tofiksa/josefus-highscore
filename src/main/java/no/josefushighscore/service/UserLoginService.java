@@ -1,5 +1,6 @@
 package no.josefushighscore.service;
 
+import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.exception.EmailExistsException;
 import no.josefushighscore.model.User;
@@ -13,9 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 @Component
 public class UserLoginService {
     @Autowired
@@ -28,36 +28,23 @@ public class UserLoginService {
     PasswordEncoder passwordEncoder;
 
 
-    public Object login(User loginRequestDTO) {
+
+    public LoginUserDto login(LoginUserDto loginRequestDTO) {
 
         String username = loginRequestDTO.getUsername();
         String pwd = loginRequestDTO.getPassword();
-
-        String token = jwtTokenProvider.createToken(username, this.users.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
-
-        Map<Object, Object> model = new HashMap<>();
-        model.put("username", username);
-        model.put("token", token);
+        String token = getJWTToken(username);
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, pwd));
+        loginRequestDTO.setJwtToken(token);
 
-        return model;
+        return loginRequestDTO;
     }
 
-    public Object login(UserDto loginRequestDTO) {
-
-        String username = loginRequestDTO.getUsername();
-        String pwd = loginRequestDTO.getPassword();
-
-        String token = jwtTokenProvider.createToken(username, this.users.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
-
-        Map<Object, Object> model = new HashMap<>();
-        model.put("username", username);
-        model.put("token", token);
-
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, pwd));
-
-        return model;
+    private String getJWTToken(String username) {
+        return jwtTokenProvider.createToken(username,
+                users.findByUsername(username).orElseThrow(
+                        () -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
     }
 
     public User registerNewUserAccount(User user) {

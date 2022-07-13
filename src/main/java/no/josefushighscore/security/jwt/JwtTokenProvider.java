@@ -1,7 +1,9 @@
 package no.josefushighscore.security.jwt;
 
-import io.jsonwebtoken.*;
-import no.josefushighscore.exception.InvalidJwtAuthenticationException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,11 +60,11 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest req) {
         Enumeration<String> headerNames = ((HttpServletRequest) req).getHeaderNames();
 
-        while(headerNames.hasMoreElements()) {
+        /*while(headerNames.hasMoreElements()) {
             System.out.println("HEADER: " + headerNames.nextElement());
         }
 
-        System.out.println("Referer: " + req.getHeader("Referer"));
+        System.out.println("Referer: " + req.getHeader("Referer"));*/
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
@@ -71,17 +73,14 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-        try {
+
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             if (claims.getBody().getExpiration().before(new Date())) {
                 return false;
             }
-
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
-        }
+
     }
 
 }
