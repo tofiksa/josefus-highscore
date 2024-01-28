@@ -26,6 +26,8 @@ spring:
     user: ${JOSEFUS_DB_USER}
     password: ${JOSEFUS_DB_PWD}
     baseline-on-migrate: true
+  jwt:
+    secret: ${JOSEFUS_JWT_SECRET}
 
   datasource:
     url: ${JOSEFUS_DB}

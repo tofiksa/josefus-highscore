@@ -1,5 +1,6 @@
 package no.josefushighscore.security.jwt;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.Data;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class JwtProperties {
 
-    private String secretKey = "shniniupel";
+    @Value("${spring.jwt.secret}")
+    private String secretKey;
 
     //validity in milliseconds
     //private long validityInMs = 3600000; // 1h

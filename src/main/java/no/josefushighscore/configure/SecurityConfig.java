@@ -31,9 +31,9 @@ public class SecurityConfig {
                 .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/register/**").hasRole("ANONYMOUS")
-                .antMatchers("/auth/**").hasRole("ANONYMOUS").anyRequest().authenticated().and()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/register/**").hasRole("ANONYMOUS")
+                .requestMatchers("/auth/**").hasRole("ANONYMOUS").anyRequest().authenticated().and()
                 .apply(new JwtSecurityConfigurer(jwtTokenProvider));
 
         return http.build();

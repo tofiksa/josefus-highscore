@@ -2,6 +2,7 @@ package no.josefushighscore.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
+import jakarta.servlet.ServletException;
 import no.josefushighscore.service.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.servlet.ServletException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,15 +64,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @ExceptionHandler
-    public ResponseEntity handleEmailExistsException(EmailExistsException e){
 
-        APIResponse apiResponse = new APIResponse();
-        apiResponse.setStatus(HttpStatus.BAD_REQUEST);
-        apiResponse.setError("Email already exists!");
-
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-    }
 
     @ExceptionHandler
     public ResponseEntity handleSignatureException(SignatureException e){

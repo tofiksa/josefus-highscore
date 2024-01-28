@@ -35,7 +35,7 @@ public class AuthenticationController {
 
     @Secured("ROLE_ANONYMOUS")
     @PostMapping("/register")
-    public ResponseEntity registerNewUserAccount(@Valid @RequestBody UserDto accountDto) {
+    public ResponseEntity registerNewUserAccount(@Valid @RequestBody UserDto accountDto) throws Exception{
 
         APIResponse apiResponse = new APIResponse();
         try {

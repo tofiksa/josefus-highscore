@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,9 +31,7 @@ public class SecurityTestConfiguration {
                 .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/register/**").hasRole("ANONYMOUS")
-                .antMatchers("/auth/**").hasRole("ANONYMOUS").anyRequest().authenticated().and()
+                .anyRequest().authenticated().and()
                 .apply(new JwtSecurityConfigurer(jwtTokenProvider));
 
         return http.build();

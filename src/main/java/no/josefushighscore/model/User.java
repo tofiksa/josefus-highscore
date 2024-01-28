@@ -1,5 +1,6 @@
 package no.josefushighscore.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,12 +29,14 @@ public class User implements UserDetails {
     Long userId;
 
     @NotEmpty
+    @Column(name="`username`", unique = true)
     private String username;
 
     @NotEmpty
     private String password;
 
     @NotEmpty
+    @Column(name="`email`", unique = true)
     private String email;
 
     @NotEmpty

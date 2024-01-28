@@ -1,14 +1,15 @@
 package no.josefushighscore.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.tomcat.jni.User;
+import no.josefushighscore.model.User;
+
 
 public class UserDto {
 
     @JsonProperty("username")
     private String username;
 
-    @JsonProperty("password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @JsonProperty("firstname")
@@ -70,5 +71,20 @@ public class UserDto {
     }
 
 
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 }
 
