@@ -32,6 +32,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/swagger-resources", "/v3/api-docs/*", "/v3/api-docs").hasRole("ANONYMOUS")
                 .requestMatchers("/register/**").hasRole("ANONYMOUS")
                 .requestMatchers("/auth/**").hasRole("ANONYMOUS").anyRequest().authenticated().and()
                 .apply(new JwtSecurityConfigurer(jwtTokenProvider));
