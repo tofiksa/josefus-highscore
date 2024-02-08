@@ -35,6 +35,7 @@ public class UserRegisterIntegrationTest {
         user.setLastname("TestUserLastname");
         user.setEmail("test@test.com");
         user.setPassword("TestPassword");
+        user.setUsername("TestUsername");
 
         this.entityManager.persist(user);
     }
