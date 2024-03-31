@@ -20,5 +20,5 @@ jobs:
           docker run --rm
           --volume ${{ github.workspace }}/src/main/resources/db.migration:/flyway/sql:ro
           flyway/flyway:7.12.1-alpine
-          -url="jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres?user=postgres.cyvmmlkvpqakdrcxdbbc&password=${{ secrets.SUPABASE_DB }}"
+          -url="postgres://postgres.cyvmmlkvpqakdrcxdbbc:${{ secrets.SUPABASE_DB }}@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
           migrate
