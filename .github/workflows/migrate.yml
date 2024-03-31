@@ -24,5 +24,6 @@ jobs:
           url: ${{ secrets.SUPABASE_HOST }}
           user: ${{ secrets.SUPABASE_USER }}
           password: ${{ secrets.SUPABASE_PASS }}
+          database: ${{ secrets.SUPABASE_DB }}
           locations: filesystem:./src/main/resources/db.migration
       - run: echo 'deploying to prod'
