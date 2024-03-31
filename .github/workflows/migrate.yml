@@ -13,10 +13,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          SUPABASE_HOST: ${{ secrets.SUPABASE_HOST }}
-          SUPABASE_PORT: ${{ secrets.SUPABASE_PORT }}
-          SUPABASE_USER: ${{ secrets.SUPABASE_USER }}
-          SUPABASE_DB: ${{ secrets.SUPABASE_DB }}
+          POSTGRES_PASSWORD: ${{ secrets.SUPABASE_PASS }}
+          POSTGRES_USER: ${{ secrets.SUPABASE_USER }}
+          POSTGRES_DB: ${{ secrets.SUPABASE_DB }}
     steps:
       - uses: actions/checkout@v2
       - uses: joshuaavalon/flyway-action@v3.0.0
