@@ -20,5 +20,5 @@ jobs:
           docker run --rm
           --volume ${{ github.workspace }}/src/main/resources/db.migration:/flyway/sql:ro
           flyway/flyway:10.10.0-alpine
-          -url="jdbc:postgresql://${{ secrets.SUPABASE_HOST }}:${{ secrets.SUPABASE_PORT }}/${{ secrets.SUPABASE_DB }}?sslmode=require&user="${{ secrets.SUPABASE_USER }}&password=${{ secrets.SUPABASE_PASS }}"
+          -url="jdbc:postgresql://${{ secrets.SUPABASE_HOST }}:${{ secrets.SUPABASE_PORT }}/${{ secrets.SUPABASE_DB }}?sslmode=require&user="${{ secrets.SUPABASE_USER }}&password=${{ secrets.SUPABASE_PASS }}" /
           migrate
