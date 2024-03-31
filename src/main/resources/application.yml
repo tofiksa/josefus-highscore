@@ -23,16 +23,16 @@ spring:
     schemas: ${spring.jpa.properties.hibernate.default_schema}
     enabled: true
     locations: classpath:/db/migration
-    user: ${JOSEFUS_DB_USER}
-    password: ${JOSEFUS_DB_PWD}
+    user: ${SUPABASE_JOSEFUS_DB_USER}
+    password: ${SUPABASE_JOSEFUS_DB_PWD}
     baseline-on-migrate: true
   jwt:
     secret: ${JOSEFUS_JWT_SECRET}
 
   datasource:
-    url: ${JOSEFUS_DB}
-    username: ${JOSEFUS_DB_USER}
-    password: ${JOSEFUS_DB_PWD}
+    url: ${SUPABASE_JOSEFUS_DB_URL}
+    username: ${SUPABASE_JOSEFUS_DB_USER}
+    password: ${SUPABASE_JOSEFUS_DB_PWD}
     cachePrepStmts: true
     prepStmtCacheSize: 250
     prepStmtCacheSqlLimit: 2048
