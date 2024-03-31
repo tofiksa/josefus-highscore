@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS USER (
+CREATE TABLE IF NOT EXISTS USERS (
     user_id bigint NOT NULL,
     email varchar(255),
     firstname varchar(255),
