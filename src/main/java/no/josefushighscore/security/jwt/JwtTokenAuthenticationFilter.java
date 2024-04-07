@@ -6,6 +6,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import no.josefushighscore.exception.BadRequestException;
+import no.josefushighscore.model.Errors;
 import no.josefushighscore.service.APIResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+
 @Component
 public class JwtTokenAuthenticationFilter implements Filter {
 
@@ -38,6 +41,9 @@ public class JwtTokenAuthenticationFilter implements Filter {
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        HashMap<String, String> errors = new HashMap<>();
+        errors.put("login","Authetication Failed!");
+
 
         log.debug("TOKEN fra JwtTokenAuthenticationFilter: " + token);
         log.debug("Requesturl fra JwtTokenAuthenticationFilter: " + ((HttpServletRequest) req).getRequestURI());
@@ -46,7 +52,9 @@ public class JwtTokenAuthenticationFilter implements Filter {
         log.debug("doFilter fra JwtTokenAuthenticationFilter");
 
         if(exception!=null && exception instanceof BadRequestException){
-            APIResponse errorResponse = new APIResponse(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED),exception.getMessage(),"Authetication Failed!");
+
+
+            APIResponse errorResponse = new APIResponse(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED),exception.getMessage(),new Errors(errors,null));
             errorResponse.setStatus(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED));
             PrintWriter writer = httpServletResponse.getWriter();
             writer.write(convertObjectToJson(errorResponse));
@@ -55,7 +63,7 @@ public class JwtTokenAuthenticationFilter implements Filter {
         }
         // If exception instance cannot be determined, then throw a nice exception and desired response code.
         else if(exception!=null){
-            APIResponse errorResponse = new APIResponse(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED),exception.getMessage(),"Authetication Failed!");
+            APIResponse errorResponse = new APIResponse(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED),exception.getMessage(),new Errors(errors,null));
             PrintWriter writer = httpServletResponse.getWriter();
             writer.write(convertObjectToJson(errorResponse));
             writer.flush();

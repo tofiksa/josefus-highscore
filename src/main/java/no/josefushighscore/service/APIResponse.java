@@ -1,5 +1,6 @@
 package no.josefushighscore.service;
 
+import no.josefushighscore.model.Errors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -8,16 +9,16 @@ public class APIResponse {
 
     private HttpStatus status;
     private Object data;
-    private Object error;
+    private Errors errors;
     private Object message;
 
     public APIResponse() {
         this.status = HttpStatus.OK;
     }
 
-    public APIResponse(HttpStatus httpStatus, String message, String s) {
+    public APIResponse(HttpStatus httpStatus, String message, Errors s) {
         this.message = message;
-        this.error = s;
+        this.errors = s;
         this.setStatus(httpStatus);
     }
 
@@ -37,12 +38,12 @@ public class APIResponse {
         this.data = data;
     }
 
-    public Object getError() {
-        return error;
+    public Errors getErrors() {
+        return errors;
     }
 
-    public void setError(Object error) {
-        this.error = error;
+    public void setErrors(Errors errors) {
+        this.errors = errors;
     }
 
     public Object getMessage() {
