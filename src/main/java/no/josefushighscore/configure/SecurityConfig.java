@@ -5,15 +5,18 @@ import no.josefushighscore.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
+import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@Import(SecurityProblemSupport.class)
 public class SecurityConfig {
 
     @Autowired
@@ -21,6 +24,9 @@ public class SecurityConfig {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    SecurityProblemSupport problemSupport;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

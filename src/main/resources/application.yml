@@ -2,9 +2,13 @@ server:
   port: 8080
 
 spring:
+  http:
+    encoding:
+      force: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    throw-exception-if-no-handler-found: true
   main:
     allow-circular-references: true
   jackson:
@@ -48,11 +52,11 @@ spring:
       # fixes Caused by: java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.default_schema: josefushighscore
-
   data:
     jpa:
       repositories.enabled: true
-
+  resources:
+    add-mappings: false
 logging:
   level:
     org.springframework.web: INFO
