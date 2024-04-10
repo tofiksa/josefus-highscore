@@ -5,23 +5,23 @@ import java.util.List;
 
 public class Errors {
 
-    HashMap<String, String> errors;
+    HashMap<String, String> fields;
 
     HashMap<String, List<String>> listErrors;
 
 
 
     public Errors(HashMap<String, String> errors,HashMap<String, List<String>> listErrors) {
-        this.errors = errors;
+        this.fields = errors;
         this.listErrors = listErrors;
     }
 
-    public HashMap<String, String> getErrors() {
-        return errors;
+    public HashMap<String, String> getFields() {
+        return fields;
     }
 
-    public void setErrors(HashMap<String, String> map) {
-        this.errors = map;
+    public void setFields(HashMap<String, String> map) {
+        this.fields = map;
     }
 
     public HashMap<String, List<String>> getListErrors() {
@@ -35,7 +35,7 @@ public class Errors {
     @Override
     public String toString() {
         return "Errors{" +
-                "errors=" + errors +
+                "errors=" + fields +
                 '}';
     }
 }

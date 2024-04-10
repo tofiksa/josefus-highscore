@@ -10,7 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity handleException(Exception e){
 
         HashMap<String, String> errors = new HashMap<>();
@@ -31,7 +35,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity handleValidationExceptions(
+            MethodArgumentNotValidException e) {
+        HashMap<String, String> errors = new HashMap<>();
+        APIResponse apiResponse = new APIResponse();
+
+        apiResponse.setStatus(HttpStatus.BAD_REQUEST);
+        e.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        apiResponse.setErrors(new Errors(errors,null));
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity handleBadRequestException(BadRequestException e){
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
@@ -40,23 +61,24 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.BAD_REQUEST);
         apiResponse.setErrors(new Errors(errors,null));
 
-        return ResponseEntity.status(400).body(apiResponse);
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity handleAccessDeniedException(AuthenticationException e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
 
         APIResponse apiResponse = new APIResponse();
-        apiResponse.setStatus(HttpStatus.BAD_REQUEST);
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity handleBadCredentialsException(BadCredentialsException e){
 
         HashMap<String, String> errors = new HashMap<>();
@@ -70,6 +92,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity handleUsernameNotFoundException(UsernameNotFoundException e) {
 
         HashMap<String, String> errors = new HashMap<>();
