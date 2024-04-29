@@ -5,6 +5,9 @@ import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.ServletException;
 import no.josefushighscore.model.Errors;
 import no.josefushighscore.service.APIResponse;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,18 +24,32 @@ import java.util.HashMap;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity handleException(Exception e){
 
         HashMap<String, String> errors = new HashMap<>();
-        errors.put("errors",String.valueOf(e));
+        errors.put("errors",extractDetailedMessage(e));
 
         APIResponse apiResponse = new APIResponse();
         apiResponse.setErrors(new Errors(errors,null));
         apiResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+    }
+
+    private String extractDetailedMessage(Throwable e) {
+        final String message = e.getMessage();
+        if (message == null) {
+            return "";
+        }
+        final int tailIndex = StringUtils.indexOf(message, "; nested exception is");
+        if (tailIndex == -1) {
+            return message;
+        }
+        return StringUtils.left(message, tailIndex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -73,7 +90,7 @@ public class GlobalExceptionHandler {
         APIResponse apiResponse = new APIResponse();
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
-
+        LOG.info(e.getMessage());
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
@@ -87,6 +104,7 @@ public class GlobalExceptionHandler {
         APIResponse apiResponse = new APIResponse();
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
+        LOG.info(e.getMessage());
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -101,6 +119,7 @@ public class GlobalExceptionHandler {
         APIResponse apiResponse = new APIResponse();
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
+        LOG.info(e.getMessage());
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
