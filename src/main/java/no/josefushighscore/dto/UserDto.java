@@ -1,6 +1,7 @@
 package no.josefushighscore.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import no.josefushighscore.model.User;
 
 
@@ -17,7 +18,7 @@ public class UserDto {
 
     @JsonProperty("lastname")
     private String lastname;
-
+    @NotBlank
     @JsonProperty("email")
     private String email;
 

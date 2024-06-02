@@ -3,6 +3,7 @@ package no.josefushighscore.controller;
 import jakarta.validation.Valid;
 import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
+import no.josefushighscore.exception.BadRequestException;
 import no.josefushighscore.service.APIResponse;
 import no.josefushighscore.service.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +35,13 @@ public class AuthenticationController {
 
     @Secured("ROLE_ANONYMOUS")
     @PostMapping("/register")
-    public ResponseEntity registerNewUserAccount(@Valid @RequestBody UserDto accountDto) throws Exception{
+    public ResponseEntity registerNewUserAccount(@Valid @RequestBody UserDto accountDto) throws BadRequestException {
 
         APIResponse apiResponse = new APIResponse();
-        try {
-            loginService.registerNewUserAccount(accountDto);
-            apiResponse.setStatus(HttpStatus.CREATED);
-            apiResponse.setMessage("User registered successfully");
-        } catch (Exception e) {
-            apiResponse.setStatus(HttpStatus.BAD_REQUEST);
-            apiResponse.setError(e.getMessage());
-        }
+        loginService.registerNewUserAccount(accountDto);
+        apiResponse.setStatus(HttpStatus.CREATED);
+        apiResponse.setMessage("User registered successfully");
+
         return ResponseEntity
                 .status(apiResponse.getStatus())
                 .body(apiResponse);

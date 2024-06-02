@@ -45,7 +45,7 @@ public class UserLoginService {
     private String getJWTToken(String username) {
         return jwtTokenProvider.createToken(username,
                 users.findByUsername(username).orElseThrow(
-                        () -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
+                        () -> new UsernameNotFoundException("Username " + username + " not found")).getRoles());
     }
 
 
