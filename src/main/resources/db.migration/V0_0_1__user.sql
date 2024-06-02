@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS josefus;
+
 CREATE TABLE IF NOT EXISTS USER (
     user_id bigint NOT NULL,
     email varchar(255),
