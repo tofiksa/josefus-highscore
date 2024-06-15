@@ -10,7 +10,7 @@ public class UserDto {
     @JsonProperty("username")
     private String username;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty("password")
     private String password;
 
     @JsonProperty("firstname")
