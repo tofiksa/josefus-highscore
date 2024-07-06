@@ -32,6 +32,13 @@ public class UserDto {
         this.email = email;
     }
 
+    public UserDto(String username, String firstname, String lastname, String email) {
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+    }
+
     public UserDto() {
         
     }
