@@ -1,13 +1,12 @@
 package no.josefushighscore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.josefushighscore.configure.JwtAuthenticationFilter;
 import no.josefushighscore.configure.SecurityTestConfiguration;
 import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.register.UserRegister;
-import no.josefushighscore.security.jwt.JwtTokenProvider;
 import no.josefushighscore.service.AuthenticationService;
-import org.junit.Ignore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class AuthenticationTestController {
     AuthenticationService userLoginService;
 
     @MockBean
-    JwtTokenProvider jwtTokenProvider;
+    JwtAuthenticationFilter jwtTokenProvider;
 
     @MockBean
     UserRegister userRegister;
@@ -45,8 +44,7 @@ public class AuthenticationTestController {
 
     @Autowired
     WebApplicationContext webApplicationContext;
-
-    @Ignore
+    
     @Test
     @DisplayName("Test register new user")
     @WithAnonymousUser

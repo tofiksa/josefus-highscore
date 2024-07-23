@@ -1,7 +1,7 @@
 package no.josefushighscore.controller;
 
+import no.josefushighscore.configure.JwtAuthenticationFilter;
 import no.josefushighscore.configure.SecurityTestConfiguration;
-import no.josefushighscore.security.jwt.JwtTokenProvider;
 import org.junit.Ignore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class UserInfoTestController {
     private MockMvc mockMvc;
 
     @MockBean
-    JwtTokenProvider jwtTokenProvider;
+    JwtAuthenticationFilter jwtTokenProvider;
 
     @Test
     @DisplayName("Test get userinfo")
