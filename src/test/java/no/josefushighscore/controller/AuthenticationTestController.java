@@ -44,7 +44,7 @@ public class AuthenticationTestController {
 
     @Autowired
     WebApplicationContext webApplicationContext;
-    
+
     @Test
     @DisplayName("Test register new user")
     @WithAnonymousUser
