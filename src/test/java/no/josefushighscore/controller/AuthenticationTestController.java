@@ -1,12 +1,12 @@
 package no.josefushighscore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.josefushighscore.configure.JwtAuthenticationFilter;
 import no.josefushighscore.configure.SecurityTestConfiguration;
 import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.register.UserRegister;
-import no.josefushighscore.security.jwt.JwtTokenProvider;
-import no.josefushighscore.service.UserLoginService;
+import no.josefushighscore.service.AuthenticationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,10 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthenticationTestController {
 
     @MockBean
-    UserLoginService userLoginService;
+    AuthenticationService userLoginService;
 
     @MockBean
-    JwtTokenProvider jwtTokenProvider;
+    JwtAuthenticationFilter jwtTokenProvider;
 
     @MockBean
     UserRegister userRegister;
@@ -47,7 +45,6 @@ public class AuthenticationTestController {
     @Autowired
     WebApplicationContext webApplicationContext;
 
-
     @Test
     @DisplayName("Test register new user")
     @WithAnonymousUser
@@ -55,7 +52,7 @@ public class AuthenticationTestController {
 
         UserDto userDto = new UserDto("testuser", "setuppassword", "TestFirstname", "TestLastname", "test@test.com");
 
-        when(userLoginService.registerNewUserAccount(any(UserDto.class))).thenReturn(userDto);
+        //when(userLoginService.registerNewUserAccount(any(UserDto.class))).thenReturn(userDto);
 
         mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(userDto)))
@@ -70,7 +67,7 @@ public class AuthenticationTestController {
 
         LoginUserDto userDto = new LoginUserDto("basicUser", "setuppassword","testjwt");
 
-        when(userLoginService.login(any(LoginUserDto.class))).thenReturn(userDto);
+        //when(userLoginService.login(any(LoginUserDto.class))).thenReturn(userDto);
 
         mockMvc.perform(post("/auth/signin").contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(userDto))

@@ -27,6 +27,7 @@ spring:
     password: ${SUPABASE_JOSEFUS_DB_PWD}
   jwt:
     secret: ${JOSEFUS_JWT_SECRET}
+    expiration-time: 3600000
 
   datasource:
     url: ${SUPABASE_JOSEFUS_DB_URL}

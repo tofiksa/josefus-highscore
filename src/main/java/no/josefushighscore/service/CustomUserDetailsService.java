@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRegister users;
+    private final UserRegister users;
 
     public CustomUserDetailsService(UserRegister users) {
         this.users = users;
