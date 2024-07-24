@@ -1,6 +1,6 @@
 package no.josefushighscore.service;
 
-import no.josefushighscore.dto.UserDto;
+import no.josefushighscore.model.User;
 import no.josefushighscore.register.UserRegister;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Optional<UserDto> getUserDetails(String username) {
+    public Optional<User> getUserDetails(String username) {
+
         return this.userRepository.getUserDetails(username);
     }
 }

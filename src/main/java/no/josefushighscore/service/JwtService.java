@@ -63,7 +63,7 @@ public class JwtService {
                 .claim("roles",userRegister.findByUsername(userDetails.getUsername()).orElseThrow(
                                 () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getRoles())
                 .claim("email", userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getEmail())
-                .claim("name", userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getFirstname())
+                .claim("name", getFullname(userDetails))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -73,6 +73,10 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    private String getFullname (UserDetails userDetails) {
+        return userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getFirstname() + " " + userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getLastname();
     }
 
     private boolean isTokenExpired(String token) {

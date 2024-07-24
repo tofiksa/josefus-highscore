@@ -18,9 +18,13 @@ public class UserDto {
 
     @JsonProperty("lastname")
     private String lastname;
+
     @NotBlank
     @JsonProperty("email")
     private String email;
+
+    @JsonProperty("fullname")
+    private String fullname;
 
 
 
@@ -45,6 +49,10 @@ public class UserDto {
 
     public static User builder() {
         return new User();
+    }
+
+    public String getFullname() {
+        return firstname + " " + lastname;
     }
 
     public String getUsername() {
