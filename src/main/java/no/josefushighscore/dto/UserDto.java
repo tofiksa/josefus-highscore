@@ -47,8 +47,14 @@ public class UserDto {
         
     }
 
-    public static User builder() {
-        return new User();
+    public static UserDto fromUser(User user) {
+        UserDto dto = new UserDto();
+        dto.setUsername(user.getUsername());
+        dto.setFirstname(user.getFirstname());
+        dto.setLastname(user.getLastname());
+        dto.setEmail(user.getEmail());
+
+        return dto;
     }
 
     public String getFullname() {

@@ -17,7 +17,6 @@ public class UserService {
     }
 
     public Optional<User> getUserDetails(String username) {
-
-        return this.userRepository.getUserDetails(username);
+        return userRepository.getUserDetails(username);
     }
 }

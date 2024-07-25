@@ -18,17 +18,6 @@ spring:
       FAIL_ON_UNKNOWN_PROPERTIES: false
       ACCEPT_SINGLE_VALUE_AS_ARRAY: true
     default-property-inclusion: non_empty
-  flyway:
-    url: ${spring.datasource.url}
-    schemas: josefushighscore
-    enabled: true
-    locations: classpath:/db/migration
-    user: ${SUPABASE_JOSEFUS_DB_USER}
-    password: ${SUPABASE_JOSEFUS_DB_PWD}
-  jwt:
-    secret: ${JOSEFUS_JWT_SECRET}
-    expiration-time: 3600000
-
   datasource:
     url: ${SUPABASE_JOSEFUS_DB_URL}
     username: ${SUPABASE_JOSEFUS_DB_USER}
@@ -37,7 +26,20 @@ spring:
     prepStmtCacheSize: 250
     prepStmtCacheSqlLimit: 2048
     useServerPrepStmts: true
-
+  flyway:
+    url: ${spring.datasource.url}
+    default-schema: josefushighscore
+    schemas:
+      - josefushighscore
+    enabled: true
+    locations: classpath:db/migration
+    user: ${SUPABASE_JOSEFUS_DB_USER}
+    password: ${SUPABASE_JOSEFUS_DB_PWD}
+    baselineOnMigrate: true
+    check-location: true
+  jwt:
+    secret: ${JOSEFUS_JWT_SECRET}
+    expiration-time: 3600000
   jpa:
     openInView: false
     show_sql: false
@@ -46,16 +48,23 @@ spring:
       ddl-auto: update
     properties:
       # fixes Caused by: java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
-      hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.default_schema: josefushighscore
-
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        default_schema: josefushighscore
   data:
     jpa:
       repositories.enabled: true
-
 logging:
   level:
-    org.springframework.web: INFO
-    org.springframework.security: Debug
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace
+      flywaydb: INFO
