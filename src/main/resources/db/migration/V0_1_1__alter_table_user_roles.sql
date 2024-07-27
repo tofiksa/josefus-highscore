@@ -1,1 +1,1 @@
-ALTER TABLE josefushighscore.user_roles ADD COLUMN role_id bigint;
+ALTER TABLE josefushighscore.user_roles ADD COLUMN IF NOT EXISTS role_id bigint;

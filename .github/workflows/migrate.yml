@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: >-
           docker run --rm
-          --volume ${{ github.workspace }}/src/main/resources/db.migration:/flyway/sql:ro
+          --volume ${{ github.workspace }}/src/main/resources/db/migration:/flyway/sql:ro
           flyway/flyway:7.12.1-alpine
           -url="jdbc:postgresql://postgres.cyvmmlkvpqakdrcxdbbc:${{ secrets.SUPABASE_PASS }}@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
           migrate

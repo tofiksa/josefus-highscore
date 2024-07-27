@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
@@ -47,7 +48,16 @@ public class User implements UserDetails {
     @NotEmpty
     private String lastname;
 
+    @Column(name="`supabase_id`", unique = true)
+    private UUID supabase_id;
 
+    public UUID getSupabase_id() {
+        return supabase_id;
+    }
+
+    public void setSupabase_id(UUID supabase_id) {
+        this.supabase_id = supabase_id;
+    }
 
     public void setUsername(String username) {
         this.username = username;
