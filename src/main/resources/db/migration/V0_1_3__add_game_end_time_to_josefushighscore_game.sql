@@ -1,0 +1,1 @@
+ALTER TABLE josefushighscore.game ADD COLUMN IF NOT EXISTS game_end_time timestamp without time zone NOT NULL;
