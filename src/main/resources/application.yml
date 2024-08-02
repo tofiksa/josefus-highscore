@@ -60,10 +60,10 @@ logging:
   level:
     org:
       springframework:
-        web: INFO
-        security: INFO
+        web: DEBUG
+        security: DEBUG
       hibernate:
-        SQL: debug
+        SQL: DEBUG
         type:
           descriptor:
             sql: trace

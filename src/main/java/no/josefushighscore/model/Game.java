@@ -18,11 +18,11 @@ public class Game {
     Long gameId;
 
     @ManyToOne
-    @JoinColumn(name = "scoreId")
-    private Score score;
+    @JoinColumn(name = "`scoreId`")
+    private Score scoreId;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
+    @OneToOne
+    @JoinColumn(name = "`userId`")
     private User user;
 
     @Column(name="`created_at`")
@@ -31,10 +31,58 @@ public class Game {
     @Column(name="`updated_at`")
     LocalDate updatedAt;
 
-    public Game(Score score, User user, Long gameId) {
-        this.score = score;
+    @Column(name="`game_end_time`")
+    LocalDate gameEndTime;
+
+    public LocalDate getGameEndTime() {
+        return gameEndTime;
+    }
+
+    public void setGameEndTime(LocalDate gameEndTime) {
+        this.gameEndTime = gameEndTime;
+    }
+
+    public Game(User user) {
         this.user = user;
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
         this.gameId = gameId;
     }
 
+    public Score getScoreId() {
+        return scoreId;
+    }
+
+    public void setScoreId(Score scoreId) {
+        this.scoreId = scoreId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
