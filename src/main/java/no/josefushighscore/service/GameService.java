@@ -46,15 +46,30 @@ public class GameService {
     public Score updateScore(String username, ScoreDto scoreDto) {
 
         Optional<Game> currentGame = this.gameRegister.findByGameId(Long.valueOf(scoreDto.getGameId()));
-        //List<Game> currentGame = this.gameRegister.findLatestByUserId(currentUser.get().getUserId(), PageRequest.of(0, 1));
-        LOG.debug("current game is " + currentGame.orElseThrow().getGameId() + " for username: " + username);
+
+        LOG.info("current game is {} for username: {}", currentGame.orElseThrow().getGameId(), username);
         Score score = new Score();
         score.setScore(Long.valueOf(scoreDto.getScore()));
         score.setCreatedAt(LocalDateTime.now());
         score.setGame_id(Long.valueOf(scoreDto.getGameId()));
-        LOG.debug("updating score: "  + scoreDto.getScore() + " gameId: " + scoreDto.getGameId());
+        LOG.info("updating score: {} gameId: {}", scoreDto.getScore(), scoreDto.getGameId());
+        this.scoreRegister.save(score);
 
-        return this.scoreRegister.save(score);
+        Game updatedGame = currentGame
+                .map(game -> {
+                    game.setScoreId(score);
+                    return this.gameRegister.save(game);
+                })
+                .orElse(null);  // Or throw an exception, or handle the absence in another way
+
+        if (updatedGame != null) {
+            // Game was found and updated
+        } else {
+            // Game was not found
+        }
+
+
+        return score;
     }
 
 

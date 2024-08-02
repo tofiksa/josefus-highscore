@@ -26,10 +26,6 @@ public class Score {
     @Column(name="`game_id`", unique = true)
     private Long game_id;
 
-    public Long getGame_id() {
-        return game_id;
-    }
-
     public void setGame_id(Long game_id) {
         this.game_id = game_id;
     }
