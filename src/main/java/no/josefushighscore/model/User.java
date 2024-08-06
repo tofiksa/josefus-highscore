@@ -71,6 +71,10 @@ public class User implements UserDetails {
         return firstname;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }

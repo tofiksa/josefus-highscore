@@ -1,15 +1,13 @@
 package no.josefushighscore.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDate;
 
 @Entity
 @Table(name="`game`")
 @Data
-@NoArgsConstructor
 public class Game {
 
     @Id
@@ -33,6 +31,10 @@ public class Game {
 
     @Column(name="`game_end_time`")
     LocalDate gameEndTime;
+
+    public Game() {
+
+    }
 
     public LocalDate getGameEndTime() {
         return gameEndTime;

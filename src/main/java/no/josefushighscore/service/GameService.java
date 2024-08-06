@@ -9,6 +9,9 @@ import no.josefushighscore.register.ScoreRegister;
 import no.josefushighscore.register.UserRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +44,19 @@ public class GameService {
         gameRegister.save(game);
 
         return game;
+    }
+
+    public Page<Game> getAllGames(String username, int page, int size) {
+
+        Optional<User> currentUser = userRegister.findByUsername(username);
+        Long userId = currentUser.orElseThrow( () -> new UsernameNotFoundException("Username " + username + " not found")).getUserId();
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("gameId").descending());
+        Page<Game> games = this.gameRegister.findByUser_UserId(userId,pageRequest);
+
+        LOG.info("size of listofGames {}", games.getSize());
+
+        return games;
     }
 
     public Score updateScore(String username, ScoreDto scoreDto) {
