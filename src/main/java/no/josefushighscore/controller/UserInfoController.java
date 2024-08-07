@@ -1,7 +1,7 @@
 package no.josefushighscore.controller;
 
+import no.josefushighscore.dto.GameDto;
 import no.josefushighscore.exception.InvalidJwtAuthenticationException;
-import no.josefushighscore.model.Game;
 import no.josefushighscore.service.GameService;
 import no.josefushighscore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +34,9 @@ public class UserInfoController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/games")
-    public ResponseEntity<Page<Game>> totalGames(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<GameDto>> totalGames(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size) {
-        Page<Game> games = gameService.getAllGames(userDetails.getUsername(), page, size);
+        Page<GameDto> games = gameService.getAllGames(userDetails.getUsername(), page, size);
         return ResponseEntity.ok(games);
     }
 
