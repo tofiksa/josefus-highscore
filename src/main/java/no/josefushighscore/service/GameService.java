@@ -1,5 +1,6 @@
 package no.josefushighscore.service;
 
+import no.josefushighscore.dto.GameDto;
 import no.josefushighscore.dto.ScoreDto;
 import no.josefushighscore.model.Game;
 import no.josefushighscore.model.Score;
@@ -46,7 +47,7 @@ public class GameService {
         return game;
     }
 
-    public Page<Game> getAllGames(String username, int page, int size) {
+    public Page<GameDto> getAllGames(String username, int page, int size) {
 
         Optional<User> currentUser = userRegister.findByUsername(username);
         Long userId = currentUser.orElseThrow( () -> new UsernameNotFoundException("Username " + username + " not found")).getUserId();
@@ -54,9 +55,11 @@ public class GameService {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("gameId").descending());
         Page<Game> games = this.gameRegister.findByUser_UserId(userId,pageRequest);
 
+        Page<GameDto> gameDTOPage = games.map(this::convertToGameDTO);
+
         LOG.info("size of listofGames {}", games.getSize());
 
-        return games;
+        return gameDTOPage;
     }
 
     public Score updateScore(String username, ScoreDto scoreDto) {
@@ -86,6 +89,18 @@ public class GameService {
 
 
         return score;
+    }
+
+    private GameDto convertToGameDTO(Game game) {
+        return new GameDto(
+                game.getScoreId(),
+                game.getGameId(),
+                game.getUser().getUserId(),
+                game.getUser().getUsername(),
+                game.getCreatedAt(),
+                game.getUpdatedAt(),
+                game.getGameEndTime()
+        );
     }
 
 
