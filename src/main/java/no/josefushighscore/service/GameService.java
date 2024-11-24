@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -40,8 +39,8 @@ public class GameService {
         Game game = new Game();
         game.setUser(currentUser.orElseThrow(
                 () -> new UsernameNotFoundException("Username " + username + " not found")));
-        game.setCreatedAt(LocalDate.now());
-        game.setGameEndTime(LocalDate.now());
+        game.setCreatedAt(LocalDateTime.now());
+        game.setGameEndTime(LocalDateTime.now());
         gameRegister.save(game);
 
         return game;
@@ -86,7 +85,6 @@ public class GameService {
         } else {
             // Game was not found
         }
-
 
         return score;
     }

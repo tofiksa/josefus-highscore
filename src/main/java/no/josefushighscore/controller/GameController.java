@@ -3,6 +3,7 @@ package no.josefushighscore.controller;
 import no.josefushighscore.dto.ScoreDto;
 import no.josefushighscore.exception.InvalidJwtAuthenticationException;
 import no.josefushighscore.service.GameService;
+import no.josefushighscore.service.ScoreService;
 import no.josefushighscore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,9 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private ScoreService scoreService;
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/id")
     public ResponseEntity getGameId(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
@@ -34,5 +38,11 @@ public class GameController {
     @PostMapping("/score")
     public ResponseEntity postScore(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ScoreDto scoreDto) throws InvalidJwtAuthenticationException {
         return ok(gameService.updateScore(userDetails.getUsername(), scoreDto));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/score")
+    public ResponseEntity getScore(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+        return ok(scoreService.getTotalScoreForUser(userDetails.getUsername()));
     }
 }

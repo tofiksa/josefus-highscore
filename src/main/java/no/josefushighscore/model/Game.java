@@ -3,7 +3,7 @@ package no.josefushighscore.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="`game`")
@@ -24,23 +24,23 @@ public class Game {
     private User user;
 
     @Column(name="`created_at`")
-    LocalDate createdAt;
+    LocalDateTime createdAt;
 
     @Column(name="`updated_at`")
-    LocalDate updatedAt;
+    LocalDateTime updatedAt;
 
     @Column(name="`game_end_time`")
-    LocalDate gameEndTime;
+    LocalDateTime gameEndTime;
 
     public Game() {
 
     }
 
-    public LocalDate getGameEndTime() {
+    public LocalDateTime getGameEndTime() {
         return gameEndTime;
     }
 
-    public void setGameEndTime(LocalDate gameEndTime) {
+    public void setGameEndTime(LocalDateTime gameEndTime) {
         this.gameEndTime = gameEndTime;
     }
 
@@ -72,19 +72,19 @@ public class Game {
         this.user = user;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }
