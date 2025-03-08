@@ -38,13 +38,26 @@ public class RankServiceTest {
 
     @Test
     public void testGetTopTenPlayers() {
+        // Create users with usernames but don't set IDs directly
         User user1 = new User();
-        user1.setUserId(1L);
         user1.setUsername("player1");
 
         User user2 = new User();
-        user2.setUserId(2L);
         user2.setUsername("player2");
+
+        // Use reflection to set the IDs for testing purposes
+        // This is a workaround for testing only - not needed in production code
+        try {
+            java.lang.reflect.Field field1 = User.class.getDeclaredField("userId");
+            field1.setAccessible(true);
+            field1.set(user1, 1L);
+
+            java.lang.reflect.Field field2 = User.class.getDeclaredField("userId");
+            field2.setAccessible(true);
+            field2.set(user2, 2L);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to setup test", e);
+        }
 
         List<User> users = Arrays.asList(user1, user2);
 
@@ -62,8 +75,9 @@ public class RankServiceTest {
         Game game2 = new Game();
         game2.setScoreId(score2);
 
-        when(gameRegister.findByUser_UserId(1L)).thenReturn(Collections.singletonList(game1));
-        when(gameRegister.findByUser_UserId(2L)).thenReturn(Collections.singletonList(game2));
+        // Use the getUserId() method to get the IDs that were set via reflection
+        when(gameRegister.findByUser_UserId(user1.getUserId())).thenReturn(Collections.singletonList(game1));
+        when(gameRegister.findByUser_UserId(user2.getUserId())).thenReturn(Collections.singletonList(game2));
 
         ObjectNode result = rankService.getTopTenPlayers();
 
@@ -81,4 +95,3 @@ public class RankServiceTest {
         assertEquals(expectedPlayer2, result.get("topTenPlayers").get(1));
     }
 }
-
