@@ -56,7 +56,7 @@ public class ScoreService {
         return getUserId.orElseThrow().getUserId();
     }
 
-    private ObjectNode getHighestAndLowestScores(List<Game> getAllGamesForUser) {
+    public ObjectNode getHighestAndLowestScores(List<Game> getAllGamesForUser) {
 
         Stream<Score> scores = getAllGamesForUser.stream()
                 .map(Game::getScoreId)

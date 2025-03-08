@@ -41,8 +41,8 @@ public class UserInfoController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/score")
-    public ResponseEntity totalScore(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+    @GetMapping("/rank")
+    public ResponseEntity getRank(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(userService.getUserDetails(userDetails.getUsername()));
     }
 
