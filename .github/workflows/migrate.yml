@@ -14,11 +14,14 @@ jobs:
       SUPABASE_PORT: ${{ secrets.SUPABASE_PORT }}
       SUPABASE_USER: ${{ secrets.SUPABASE_USER }}
       SUPABASE_DB: ${{ secrets.SUPABASE_DB }}
+      SUPABASE_PASS: ${{ secrets.SUPABASE_PASS }}
     steps:
       - uses: actions/checkout@v2
       - run: >-
           docker run --rm
           --volume ${{ github.workspace }}/src/main/resources/db/migration:/flyway/sql:ro
           flyway/flyway:7.12.1-alpine
-          -url="jdbc:postgresql://postgres.cyvmmlkvpqakdrcxdbbc:${{ secrets.SUPABASE_PASS }}@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+          -url="jdbc:postgresql://${{ env.SUPABASE_HOST }}:${{ env.SUPABASE_PORT }}/${{ env.SUPABASE_DB }}"
+          -user="${{ env.SUPABASE_USER }}"
+          -password="${{ env.SUPABASE_PASS }}"
           migrate
