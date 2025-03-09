@@ -24,4 +24,12 @@ jobs:
           -url="jdbc:postgresql://${{ env.SUPABASE_HOST }}:${{ env.SUPABASE_PORT }}/${{ env.SUPABASE_DB }}"
           -user="${{ env.SUPABASE_USER }}"
           -password="${{ env.SUPABASE_PASS }}"
+          repair
+      - run: >-
+          docker run --rm
+          --volume ${{ github.workspace }}/src/main/resources/db/migration:/flyway/sql:ro
+          flyway/flyway:7.12.1-alpine
+          -url="jdbc:postgresql://${{ env.SUPABASE_HOST }}:${{ env.SUPABASE_PORT }}/${{ env.SUPABASE_DB }}"
+          -user="${{ env.SUPABASE_USER }}"
+          -password="${{ env.SUPABASE_PASS }}"
           migrate
