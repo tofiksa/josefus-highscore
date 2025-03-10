@@ -1,6 +1,7 @@
 package no.josefushighscore.controller;
 
 import no.josefushighscore.dto.ScoreDto;
+import no.josefushighscore.exception.BadRequestException;
 import no.josefushighscore.exception.InvalidJwtAuthenticationException;
 import no.josefushighscore.service.GameService;
 import no.josefushighscore.service.RankService;
@@ -8,6 +9,7 @@ import no.josefushighscore.service.ScoreService;
 import no.josefushighscore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,9 +52,9 @@ public class GameController {
         return ok(scoreService.getTotalScoreForUser(userDetails.getUsername()));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @Secured("ROLE_ANONYMOUS")
     @GetMapping("/ranking")
-    public ResponseEntity getTopTenPlayers(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+    public ResponseEntity getTopTenPlayers() throws BadRequestException {
         return ok(rankService.getTopTenPlayers());
     }
 }
