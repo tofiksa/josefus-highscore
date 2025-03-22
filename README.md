@@ -1,15 +1,40 @@
-# josefus-highscore
-This is a spring boot application that initially handles all authentication and authorization
-for a small game I am working on.
+```markdown
+# 🎮 josefus-highscore
 
-## Written in spring boot
-This uses spring-boot-security for authentication and authorization. The application also issues a jwt token.
-It also handles all database interactions using jpa and flyway
+Welcome to the **josefus-highscore** project! This is a Spring Boot application that handles all authentication and authorization for a small game project. 🕹️
 
-### To run the app
+## ✨ Features
 
-`mvn clean install && java -jar target/target/josefus-highscore.jar`
+- **🔐 Authentication and Authorization**: Utilizes Spring Boot Security to manage user authentication and authorization.
+- **🔑 JWT Tokens**: Issues JWT tokens for secure communication.
+- **💾 Database Interaction**: Manages database interactions using JPA and Flyway for database migrations.
 
-To get an overview of all the api endpoints use this url `http://localhost:8080/swagger-ui.html`
+## 🛠️ Prerequisites
 
+- ☕ Java 11 or higher
+- 🛠️ Maven 3.6.0 or higher
 
+## 🚀 Running the Application
+
+To build and run the application, use the following commands:
+
+```sh
+mvn clean install && java -jar target/josefus-highscore.jar
+```
+
+## 📖 API Documentation
+
+For an overview of all API endpoints, visit:
+
+```
+http://localhost:8080/swagger-ui.html
+```
+
+## 🤝 Contributing
+
+Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md) when contributing to this project.
+
+## 📜 License
+
+This project is licensed under the MIT License.
+```
