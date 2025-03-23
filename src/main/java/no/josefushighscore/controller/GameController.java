@@ -1,5 +1,8 @@
 package no.josefushighscore.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.josefushighscore.dto.ScoreDto;
 import no.josefushighscore.exception.BadRequestException;
 import no.josefushighscore.exception.InvalidJwtAuthenticationException;
@@ -35,24 +38,40 @@ public class GameController {
     private RankService rankService;
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get game details", description = "Retrieve game details for the authenticated user", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @GetMapping("/id")
     public ResponseEntity getGameId(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(gameService.getGameDetails(userDetails.getUsername()));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Post score", description = "Submit a new score for the authenticated user", responses = {
+        @ApiResponse(responseCode = "200", description = "Score submitted successfully", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @PostMapping("/score")
     public ResponseEntity postScore(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ScoreDto scoreDto) throws InvalidJwtAuthenticationException {
         return ok(gameService.updateScore(userDetails.getUsername(), scoreDto));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get total score", description = "Retrieve the total score for the authenticated user", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @GetMapping("/score")
     public ResponseEntity getTotalScoreForUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(scoreService.getTotalScoreForUser(userDetails.getUsername()));
     }
 
     @Secured("ROLE_ANONYMOUS")
+    @Operation(summary = "Get top players", description = "Retrieve the top ten players", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Bad request")
+    })
     @GetMapping("/ranking")
     public ResponseEntity getTopTenPlayers() throws BadRequestException {
         return ok(rankService.getTopTenPlayers());

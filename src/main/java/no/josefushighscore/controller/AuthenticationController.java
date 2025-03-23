@@ -1,5 +1,9 @@
 package no.josefushighscore.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.exception.BadRequestException;
@@ -15,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +41,10 @@ public class AuthenticationController {
     }
 
     @Secured("ROLE_ANONYMOUS")
-    @PostMapping("/signin")
+    @Operation(summary = "Sign in a user", description = "Authenticate a user and return a JWT token", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful authentication", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     public ResponseEntity<LoginResponse> signin(@RequestBody LoginUserDto data) throws AuthenticationException {
 
         User authenticatedUser = authenticationService.authenticate(data);
@@ -54,7 +60,10 @@ public class AuthenticationController {
     }
 
     @Secured("ROLE_ANONYMOUS")
-    @PostMapping("/register")
+    @Operation(summary = "Register a new user", description = "Create a new user account", responses = {
+        @ApiResponse(responseCode = "201", description = "User registered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request")
+    })
     public ResponseEntity registerNewUserAccount(@RequestBody UserDto accountDto) throws BadRequestException {
 
         APIResponse apiResponse = new APIResponse();

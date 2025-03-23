@@ -1,5 +1,8 @@
 package no.josefushighscore.controller;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.josefushighscore.dto.GameDto;
 import no.josefushighscore.exception.InvalidJwtAuthenticationException;
 import no.josefushighscore.service.GameService;
@@ -26,12 +29,22 @@ public class UserInfoController {
     private GameService gameService;
 
 
+
+    @Operation(summary = "Get current user details", description = "Retrieve details of the currently authenticated user", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDetails.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(userService.getUserDetails(userDetails.getUsername()));
     }
 
+
+    @Operation(summary = "Get all games", description = "Retrieve all games for the authenticated user", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/games")
     public ResponseEntity<Page<GameDto>> totalGames(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "0") int page,
@@ -40,6 +53,11 @@ public class UserInfoController {
         return ResponseEntity.ok(games);
     }
 
+
+    @Operation(summary = "Get user rank", description = "Retrieve the rank of the authenticated user", responses = {
+        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDetails.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/rank")
     public ResponseEntity getRank(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
