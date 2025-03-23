@@ -68,7 +68,7 @@ jobs:
         release_name: Release ${{ steps.semver.outputs.version }}
         body: |
           Changes in this release:
-          - Description of changes
+          $(git log -1 --pretty=%B)
         draft: false
         prerelease: false
 
