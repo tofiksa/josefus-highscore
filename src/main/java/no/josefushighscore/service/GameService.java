@@ -11,13 +11,16 @@ import no.josefushighscore.register.UserRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -49,14 +52,20 @@ public class GameService {
     public Page<GameDto> getAllGames(String username, int page, int size) {
 
         Optional<User> currentUser = userRegister.findByUsername(username);
-        Long userId = currentUser.orElseThrow( () -> new UsernameNotFoundException("Username " + username + " not found")).getUserId();
+        Long userId = currentUser.orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found")).getUserId();
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("gameId").descending());
-        Page<Game> games = this.gameRegister.findByUser_UserId(userId,pageRequest);
+        Page<Game> games = (Page<Game>) gameRegister.findByUser_UserIdAndScoreIdIsNotNull(userId, pageRequest);
 
-        Page<GameDto> gameDTOPage = games.map(this::convertToGameDTO);
+        // Filter out null games and games that do not include a score
+        List<GameDto> validGameDtos = games.stream()
+            .filter(game -> game.getScoreId() != null)
+            .map(this::convertToGameDTO)
+            .collect(Collectors.toList());
 
-        LOG.info("size of listofGames {}", games.getSize());
+        Page<GameDto> gameDTOPage = new PageImpl<>(validGameDtos, pageRequest, games.getTotalElements());
+
+        LOG.info("size of listofGames {}", validGameDtos.size());
 
         return gameDTOPage;
     }

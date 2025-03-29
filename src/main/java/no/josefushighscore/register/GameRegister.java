@@ -14,6 +14,6 @@ public interface GameRegister  extends JpaRepository<Game,Long> {
 
     Optional<Game> findLatestByUser_UserId(Long userId);
     Optional<Game> findByGameId(Long gameId);
-    Page<Game> findByUser_UserId(Long userId, Pageable pageable);
+    Page<Game> findByUser_UserIdAndScoreIdIsNotNull(Long userId, Pageable pageable);
     List<Game> findByUser_UserId(Long userId);
 }
