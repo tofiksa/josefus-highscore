@@ -26,6 +26,9 @@ public class JwtService {
     @Value("${spring.jwt.expiration-time}")
     private long jwtExpiration;
 
+    @Value("${spring.jwt.refresh-expiration-time}")
+    private long refreshTokenExpiration;
+
     @Autowired
     private UserRegister userRegister;
 
@@ -44,6 +47,19 @@ public class JwtService {
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, refreshTokenExpiration);
+    }
+
+    public boolean isRefreshTokenValid(String token) {
+        try {
+            extractAllClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public long getExpirationTime() {

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.josefushighscore.dto.LoginUserDto;
+import no.josefushighscore.dto.RefreshTokenRequestDto;
 import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.exception.BadRequestException;
 import no.josefushighscore.model.User;
@@ -42,6 +43,23 @@ public class AuthenticationController {
     }
 
     @Secured("ROLE_ANONYMOUS")
+    @PostMapping("/refresh-token")
+    @Operation(summary = "Refresh access token", description = "Generate new access token using refresh token", responses = {
+        @ApiResponse(responseCode = "200", description = "New token generated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Invalid refresh token")
+    })
+    public ResponseEntity<LoginResponse> refreshToken(@RequestBody RefreshTokenRequestDto request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+            // Validate refresh token and generate new access token
+            LoginResponse response = authenticationService.refreshToken(refreshToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @Secured("ROLE_ANONYMOUS")
     @PostMapping("/signin")
     @Operation(summary = "Sign in a user", description = "Authenticate a user and return a JWT token", responses = {
         @ApiResponse(responseCode = "200", description = "Successful authentication", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
@@ -50,13 +68,7 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> signin(@RequestBody LoginUserDto data) throws AuthenticationException {
 
         User authenticatedUser = authenticationService.authenticate(data);
-
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = new LoginResponse();
-
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
+        LoginResponse loginResponse = authenticationService.generateTokens(authenticatedUser);
 
         return ResponseEntity.ok(loginResponse);
     }

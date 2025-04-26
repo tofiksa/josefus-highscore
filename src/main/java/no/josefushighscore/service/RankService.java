@@ -42,6 +42,7 @@ public class RankService {
                     playerNode.put("totalScore", totalScore);
                     return playerNode;
                 })
+                .filter(node -> node.get("totalScore").asLong() > 0)
                 .sorted(Comparator.comparingLong(node -> -node.get("totalScore").asLong()))
                 .limit(10)
                 .collect(Collectors.toList());
