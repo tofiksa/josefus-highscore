@@ -77,6 +77,10 @@ public class UserDto {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "UserDto{" +
@@ -87,11 +91,6 @@ public class UserDto {
                 ", email='" + email + '\'' +
                 '}';
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 
     public String getFirstname() {
         return firstname;
@@ -108,5 +107,6 @@ public class UserDto {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-}
 
+
+}

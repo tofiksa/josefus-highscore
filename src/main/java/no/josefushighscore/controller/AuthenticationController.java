@@ -70,6 +70,13 @@ public class AuthenticationController {
         User authenticatedUser = authenticationService.authenticate(data);
         LoginResponse loginResponse = authenticationService.generateTokens(authenticatedUser);
 
+        if (loginResponse.getToken() != null) {
+            authenticationService.setuserLastSignedIn(authenticatedUser);
+            LOG.info("User {} logged in successfully", authenticatedUser.getUsername());
+        } else {
+            LOG.error("Failed to log in user {}", authenticatedUser.getUsername());
+        }
+
         return ResponseEntity.ok(loginResponse);
     }
 

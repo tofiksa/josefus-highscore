@@ -1,5 +1,6 @@
 package no.josefushighscore.service;
 
+import jakarta.transaction.Transactional;
 import no.josefushighscore.dto.LoginUserDto;
 import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.exception.BadRequestException;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,14 +75,25 @@ public class AuthenticationService {
         return userRepository.findByUsername(input.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username: " + input.getUsername() + " not found"));
     }
 
+    @Transactional
+    public void setuserLastSignedIn(User user) {
+        user = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        user.setLastSignedIn(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
     public LoginResponse generateTokens(UserDetails userDetails) {
         String jwtToken = jwtService.generateToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
+        // Set the last signed in time
+        LocalDateTime lastSignedIn = userRepository.findByUsername(userDetails.getUsername()).get().getLastSignedIn();
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         loginResponse.setRefreshToken(refreshToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
+        loginResponse.setLastSignedIn(lastSignedIn);
+
 
         return loginResponse;
     }

@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -51,6 +52,12 @@ public class User implements UserDetails {
     @Column(name="`supabase_id`", unique = true)
     private UUID supabase_id;
 
+    @Column(name="`last_signed_in`")
+    private LocalDateTime lastSignedIn;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+
     public UUID getSupabase_id() {
         return supabase_id;
     }
@@ -59,24 +66,16 @@ public class User implements UserDetails {
         this.supabase_id = supabase_id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getFirstname() {
         return firstname;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public String getLastname() {
@@ -95,6 +94,13 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public LocalDateTime getLastSignedIn() {
+        return lastSignedIn;
+    }
+
+    public void setLastSignedIn(LocalDateTime lastSignedIn) {
+        this.lastSignedIn = lastSignedIn;
+    }
 
     public List<String> getRoles() {
         return roles;
@@ -103,10 +109,6 @@ public class User implements UserDetails {
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -127,9 +129,17 @@ public class User implements UserDetails {
         return this.password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
