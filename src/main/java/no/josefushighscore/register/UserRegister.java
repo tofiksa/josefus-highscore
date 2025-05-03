@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRegister extends JpaRepository<User,Long> {
-    @Query("SELECT NEW no.josefushighscore.dto.UserDto(u.username, u.firstname, u.lastname, u.email) " +
+    @Query("SELECT NEW no.josefushighscore.dto.UserDto(u.username, u.firstname, u.lastname, u.email, u.lastSignedIn) " +
             "FROM User u WHERE u.username = :username")
     Optional<User> getUserDetails(@Param("username") String username);
     Optional<User> findByUsername(String username);

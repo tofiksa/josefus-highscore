@@ -120,7 +120,8 @@ public class User implements UserDetails {
                 this.getUsername(),
                 this.getFirstname(),
                 this.getLastname(),
-                this.getEmail()
+                this.getEmail(),
+                this.getLastSignedIn()
         );
     }
 
