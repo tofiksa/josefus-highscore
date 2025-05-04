@@ -6,8 +6,10 @@ import no.josefushighscore.dto.UserDto;
 import no.josefushighscore.exception.BadRequestException;
 import no.josefushighscore.exception.EmailExistsException;
 import no.josefushighscore.exception.UsernameExistsException;
+import no.josefushighscore.model.TrackUserSignins;
 import no.josefushighscore.model.User;
 import no.josefushighscore.register.UserRegister;
+import no.josefushighscore.register.UserSignInRegister;
 import no.josefushighscore.util.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,7 @@ public class AuthenticationService {
 
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(AuthenticationService.class);
     private final UserRegister userRepository;
+    private final UserSignInRegister userSignInRegister;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     @Autowired
@@ -35,10 +38,12 @@ public class AuthenticationService {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    public AuthenticationService(UserRegister userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthenticationService(UserRegister userRepository, UserSignInRegister userSignInRegister, 
+                                PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.userSignInRegister = userSignInRegister;
     }
 
     public User signup(UserDto input) {
@@ -74,29 +79,42 @@ public class AuthenticationService {
 
         return userRepository.findByUsername(input.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username: " + input.getUsername() + " not found"));
     }
-
     @Transactional
     public void setuserLastSignedIn(User user) {
-        user = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-        user.setLastSignedIn(LocalDateTime.now());
-        userRepository.save(user);
+        User persistedUser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+        // Only update the lastSignedIn field
+        persistedUser.setLastSignedIn(getPreviousSignInDate(user.getUsername()));
+        userRepository.save(persistedUser);
+
+    }
+
+
+
+    @Transactional
+    public void updateUserSignInTracking(User user) {
+        LOG.info("Updating sign-in tracking for user: {}", user.getUsername());
+        LocalDateTime now = LocalDateTime.now();
+        TrackUserSignins newTracking = new TrackUserSignins(user.getUserId(), 1, now);
+        setuserLastSignedIn(user);
+        LOG.info("Last sign-in date updated for user: {}", user.getUsername());
+        userSignInRegister.save(newTracking);
+        LOG.info("Sign-in tracking updated for user: {}", user.getUsername());
     }
 
     public LoginResponse generateTokens(UserDetails userDetails) {
         String jwtToken = jwtService.generateToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
-        // Set the last signed in time
-        LocalDateTime lastSignedIn = userRepository.findByUsername(userDetails.getUsername()).get().getLastSignedIn();
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         loginResponse.setRefreshToken(refreshToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
-        loginResponse.setLastSignedIn(lastSignedIn);
-
 
         return loginResponse;
     }
+    
     public LoginResponse refreshToken(String refreshToken) throws BadRequestException {
         try {
             // Extract username and validate refresh token
@@ -126,5 +144,17 @@ public class AuthenticationService {
 
     public boolean usernameExist(String username) {
         return userRepository.findByUsername(username).isPresent();
+    }
+
+    public LocalDateTime getPreviousSignInDate(String username) {
+        // First get the User to find their userId
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        // Then use the userId to find their previous sign-in record
+        return userSignInRegister
+                .findTopByUserIdAndLastSignInBeforeOrderByLastSignInDesc(user.getUserId(), LocalDateTime.now())
+                .map(TrackUserSignins::getLastSignIn)
+                .orElseThrow(() -> new UsernameNotFoundException("No previous sign-in record found for user ID: " + user.getUserId()));
     }
 }

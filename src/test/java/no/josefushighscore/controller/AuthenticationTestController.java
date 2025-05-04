@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,19 +40,17 @@ public class AuthenticationTestController {
 
     @MockBean
     UserRegister userRegister;
-
-    @Autowired
-    private MockMvc mockMvc;
-
     @Autowired
     WebApplicationContext webApplicationContext;
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     @DisplayName("Test register new user")
     @WithAnonymousUser
     public void testRegisterNewUser() throws Exception {
 
-        UserDto userDto = new UserDto("testuser", "setuppassword", "TestFirstname", "TestLastname", "test@test.com");
+        UserDto userDto = new UserDto("testuser", "setuppassword", "TestFirstname", "TestLastname", "test@test.com", LocalDateTime.now());
 
         //when(userLoginService.registerNewUserAccount(any(UserDto.class))).thenReturn(userDto);
 

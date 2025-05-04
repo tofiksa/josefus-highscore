@@ -31,12 +31,13 @@ public class UserDto {
     @JsonProperty("lastSignedIn")
     private LocalDateTime lastSignedIn;
 
-    public UserDto(String username, String password, String firstname, String lastname, String email) {
+    public UserDto(String username, String password, String firstname, String lastname, String email, LocalDateTime lastSignedIn) {
         this.username = username;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
+        this.lastSignedIn = lastSignedIn;
     }
 
     public UserDto(String username, String firstname, String lastname, String email, LocalDateTime lastSignedIn) {
@@ -46,8 +47,6 @@ public class UserDto {
         this.email = email;
         this.lastSignedIn = lastSignedIn;
     }
-
-
 
     public UserDto() {
 
@@ -59,6 +58,7 @@ public class UserDto {
         dto.setFirstname(user.getFirstname());
         dto.setLastname(user.getLastname());
         dto.setEmail(user.getEmail());
+        dto.setLastSignedIn(user.getLastSignedIn());
 
         return dto;
     }

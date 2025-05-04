@@ -71,7 +71,7 @@ public class AuthenticationController {
         LoginResponse loginResponse = authenticationService.generateTokens(authenticatedUser);
 
         if (loginResponse.getToken() != null) {
-            authenticationService.setuserLastSignedIn(authenticatedUser);
+            authenticationService.updateUserSignInTracking(authenticatedUser);
             LOG.info("User {} logged in successfully", authenticatedUser.getUsername());
         } else {
             LOG.error("Failed to log in user {}", authenticatedUser.getUsername());

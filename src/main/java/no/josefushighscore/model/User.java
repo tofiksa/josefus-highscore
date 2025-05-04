@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="`user_id`")
     Long userId;
 
@@ -52,11 +52,25 @@ public class User implements UserDetails {
     @Column(name="`supabase_id`", unique = true)
     private UUID supabase_id;
 
-    @Column(name="`last_signed_in`")
-    private LocalDateTime lastSignedIn;
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "roles")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @Column(name="`last_signed_in`")
+    private LocalDateTime lastSignedIn;
+
+    public LocalDateTime getLastSignedIn() {
+        return lastSignedIn;
+    }
+
+    public void setLastSignedIn(LocalDateTime lastSignedIn) {
+        this.lastSignedIn = lastSignedIn;
+    }
 
     public UUID getSupabase_id() {
         return supabase_id;
@@ -94,13 +108,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public LocalDateTime getLastSignedIn() {
-        return lastSignedIn;
-    }
-
-    public void setLastSignedIn(LocalDateTime lastSignedIn) {
-        this.lastSignedIn = lastSignedIn;
-    }
 
     public List<String> getRoles() {
         return roles;
@@ -116,13 +123,13 @@ public class User implements UserDetails {
     }
 
     public UserDto toDto() {
-        return new UserDto(
-                this.getUsername(),
-                this.getFirstname(),
-                this.getLastname(),
-                this.getEmail(),
-                this.getLastSignedIn()
-        );
+        UserDto userDto = new UserDto();
+        userDto.setUsername(this.getUsername());
+        userDto.setFirstname(this.getFirstname());
+        userDto.setLastname(this.getLastname());
+        userDto.setEmail(this.getEmail());
+        userDto.setLastSignedIn(this.getLastSignedIn());
+        return userDto;
     }
 
     @Override
