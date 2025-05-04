@@ -20,6 +20,13 @@ public interface UserSignInRegister extends JpaRepository<TrackUserSignins, Long
      * @return an Optional containing the tracking record if found
      */
     Optional<TrackUserSignins> findByUserId(Long userId);
+
+    /**
+     * Find the most recent sign-in record for a specific user
+     * @param userId the ID of the user
+     * @return an Optional containing the most recent tracking record if found
+     */
+    Optional<TrackUserSignins> findTopByUserIdOrderByLastSignInDesc(Long userId);
     
     /**
      * Delete tracking records for a specific user

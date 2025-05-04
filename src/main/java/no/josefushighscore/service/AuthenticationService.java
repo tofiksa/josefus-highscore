@@ -90,14 +90,17 @@ public class AuthenticationService {
 
     }
 
-
-
     @Transactional
     public void updateUserSignInTracking(User user) {
         LOG.info("Updating sign-in tracking for user: {}", user.getUsername());
         LocalDateTime now = LocalDateTime.now();
         TrackUserSignins newTracking = new TrackUserSignins(user.getUserId(), 1, now);
-        setuserLastSignedIn(user);
+        TrackUserSignins existingTracking = userSignInRegister.findTopByUserIdOrderByLastSignInDesc(user.getUserId())
+                .orElse(null);
+        LOG.info("Existing tracking record: {}", existingTracking);
+        if (existingTracking != null) {
+            setuserLastSignedIn(user);
+        }
         LOG.info("Last sign-in date updated for user: {}", user.getUsername());
         userSignInRegister.save(newTracking);
         LOG.info("Sign-in tracking updated for user: {}", user.getUsername());
@@ -155,6 +158,6 @@ public class AuthenticationService {
         return userSignInRegister
                 .findTopByUserIdAndLastSignInBeforeOrderByLastSignInDesc(user.getUserId(), LocalDateTime.now())
                 .map(TrackUserSignins::getLastSignIn)
-                .orElseThrow(() -> new UsernameNotFoundException("No previous sign-in record found for user ID: " + user.getUserId()));
+                .orElse(LocalDateTime.now());
     }
 }
