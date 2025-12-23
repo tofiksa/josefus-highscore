@@ -57,6 +57,27 @@ spring:
   data:
     jpa:
       repositories.enabled: true
+app:
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+      - http://localhost:8005
+    allowed-origin-patterns:
+      - http://localhost:*
+      - http://127.0.0.1:*
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+    allowed-headers:
+      - Authorization
+      - Content-Type
+      - Accept
+    exposed-headers: []
+    allow-credentials: true
 logging:
   level:
     org:
