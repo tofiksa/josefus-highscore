@@ -82,11 +82,11 @@ logging:
   level:
     org:
       springframework:
-        web: DEBUG
-        security: DEBUG
+        web: INFO
+        security: INFO
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
         type:
           descriptor:
-            sql: trace
+            sql: warn
       flywaydb: INFO

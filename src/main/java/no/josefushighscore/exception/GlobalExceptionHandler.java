@@ -1,7 +1,7 @@
 package no.josefushighscore.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.ServletException;
 import no.josefushighscore.model.Errors;
 import no.josefushighscore.service.APIResponse;
@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -28,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity handleException(Exception e){
+    public ResponseEntity<APIResponse> handleException(Exception e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",extractDetailedMessage(e));
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
         apiResponse.setErrors(new Errors(errors,null));
         apiResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value())).body(apiResponse);
     }
 
     private String extractDetailedMessage(Throwable e) {
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity handleValidationExceptions(
+    public ResponseEntity<APIResponse> handleValidationExceptions(
             MethodArgumentNotValidException e) {
         HashMap<String, String> errors = new HashMap<>();
         APIResponse apiResponse = new APIResponse();
@@ -66,11 +67,11 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         apiResponse.setErrors(new Errors(errors,null));
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())).body(apiResponse);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity handleBadRequestException(BadRequestException e){
+    public ResponseEntity<APIResponse> handleBadRequestException(BadRequestException e){
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
 
@@ -78,11 +79,11 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.BAD_REQUEST);
         apiResponse.setErrors(new Errors(errors,null));
 
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())).body(apiResponse);
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity handleAccessDeniedException(AuthenticationException e){
+    public ResponseEntity<APIResponse> handleAccessDeniedException(AuthenticationException e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
@@ -91,27 +92,12 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
         LOG.info(e.getMessage());
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity handleBadCredentialsException(BadCredentialsException e){
-
-        HashMap<String, String> errors = new HashMap<>();
-        errors.put("errors",e.getMessage());
-
-        APIResponse apiResponse = new APIResponse();
-        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
-        apiResponse.setErrors(new Errors(errors,null));
-        LOG.info(e.getMessage());
-
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity handleUsernameNotFoundException(UsernameNotFoundException e) {
+    public ResponseEntity<APIResponse> handleBadCredentialsException(BadCredentialsException e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
@@ -121,13 +107,28 @@ public class GlobalExceptionHandler {
         apiResponse.setErrors(new Errors(errors,null));
         LOG.info(e.getMessage());
 
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<APIResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
+
+        HashMap<String, String> errors = new HashMap<>();
+        errors.put("errors",e.getMessage());
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        apiResponse.setErrors(new Errors(errors,null));
+        LOG.info(e.getMessage());
+
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
 
 
     @ExceptionHandler
-    public ResponseEntity handleSignatureException(SignatureException e){
+    public ResponseEntity<APIResponse> handleSignatureException(SignatureException e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors","JWT signature does not match locally computed signature. " +
@@ -137,11 +138,11 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
 
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
     @ExceptionHandler
-    public ResponseEntity handleServletException(ServletException e){
+    public ResponseEntity<APIResponse> handleServletException(ServletException e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
@@ -150,11 +151,11 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
 
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
     @ExceptionHandler
-    public ResponseEntity handleInvalidJwtAuthenticationException(InvalidJwtAuthenticationException e){
+    public ResponseEntity<APIResponse> handleInvalidJwtAuthenticationException(InvalidJwtAuthenticationException e){
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
@@ -163,11 +164,11 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
 
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
     @ExceptionHandler
-    public ResponseEntity handleExpiredJwtException(ExpiredJwtException e){
+    public ResponseEntity<APIResponse> handleExpiredJwtException(ExpiredJwtException e){
 
 
         HashMap<String, String> errors = new HashMap<>();
@@ -177,7 +178,7 @@ public class GlobalExceptionHandler {
         apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
         apiResponse.setErrors(new Errors(errors,null));
 
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
 
