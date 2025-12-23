@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String username;
 
     @NotEmpty
-    @Column(name="`password`", unique = true)
+    @Column(name="`password`")
     private String password;
 
     @NotEmpty

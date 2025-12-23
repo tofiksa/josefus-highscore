@@ -2,8 +2,12 @@ package no.josefushighscore.dto;
 
 import java.util.Map;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginUserDto {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
 
     private String jwtToken;

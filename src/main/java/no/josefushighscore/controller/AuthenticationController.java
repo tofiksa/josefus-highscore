@@ -13,6 +13,7 @@ import no.josefushighscore.service.APIResponse;
 import no.josefushighscore.service.AuthenticationService;
 import no.josefushighscore.service.JwtService;
 import no.josefushighscore.util.LoginResponse;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "200", description = "New token generated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
         @ApiResponse(responseCode = "401", description = "Invalid refresh token")
     })
-    public ResponseEntity<LoginResponse> refreshToken(@RequestBody RefreshTokenRequestDto request) {
+    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequestDto request) {
         try {
             String refreshToken = request.getRefreshToken();
             // Validate refresh token and generate new access token
@@ -65,7 +66,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "200", description = "Successful authentication", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<LoginResponse> signin(@RequestBody LoginUserDto data) throws AuthenticationException {
+    public ResponseEntity<LoginResponse> signin(@Valid @RequestBody LoginUserDto data) throws AuthenticationException {
 
         User authenticatedUser = authenticationService.authenticate(data);
         LoginResponse loginResponse = authenticationService.generateTokens(authenticatedUser);
@@ -86,16 +87,16 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "201", description = "User registered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
         @ApiResponse(responseCode = "400", description = "Bad request")
     })
-    public ResponseEntity registerNewUserAccount(@RequestBody UserDto accountDto) throws BadRequestException {
+    public ResponseEntity<APIResponse> registerNewUserAccount(@Valid @RequestBody UserDto accountDto) throws BadRequestException {
 
-        APIResponse apiResponse = new APIResponse();
         LOG.info(String.valueOf(accountDto));
         authenticationService.signup(accountDto);
+        APIResponse apiResponse = new APIResponse();
         apiResponse.setStatus(HttpStatus.CREATED);
         apiResponse.setMessage("User registered successfully");
 
         return ResponseEntity
-                .status(apiResponse.getStatus())
+                .status(HttpStatus.CREATED)
                 .body(apiResponse);
     }
 }

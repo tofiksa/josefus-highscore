@@ -2,6 +2,7 @@ package no.josefushighscore.service;
 
 import no.josefushighscore.dto.GameDto;
 import no.josefushighscore.dto.ScoreDto;
+import no.josefushighscore.exception.InvalidJwtAuthenticationException;
 import no.josefushighscore.model.Game;
 import no.josefushighscore.model.Score;
 import no.josefushighscore.model.User;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -49,21 +51,24 @@ public class GameService {
         return game;
     }
 
+    @SuppressWarnings("null")
     public Page<GameDto> getAllGames(String username, int page, int size) {
 
         Optional<User> currentUser = userRegister.findByUsername(username);
         Long userId = currentUser.orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found")).getUserId();
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("gameId").descending());
-        Page<Game> games = (Page<Game>) gameRegister.findByUser_UserIdAndScoreIdIsNotNull(userId, pageRequest);
+        Page<Game> games = gameRegister.findByUser_UserIdAndScoreIdIsNotNull(userId, pageRequest);
+        Objects.requireNonNull(games);
 
         // Filter out null games and games that do not include a score
-        List<GameDto> validGameDtos = games.stream()
+        List<GameDto> validGameDtos = games.getContent().stream()
             .filter(game -> game.getScoreId() != null)
             .map(this::convertToGameDTO)
             .collect(Collectors.toList());
+        Objects.requireNonNull(validGameDtos);
 
-        Page<GameDto> gameDTOPage = new PageImpl<>(validGameDtos, pageRequest, games.getTotalElements());
+        Page<GameDto> gameDTOPage = new PageImpl<>(List.copyOf(validGameDtos), pageRequest, games.getTotalElements());
 
         LOG.info("size of listofGames {}", validGameDtos.size());
 
@@ -72,28 +77,28 @@ public class GameService {
 
     public Score updateScore(String username, ScoreDto scoreDto) {
 
-        Optional<Game> currentGame = this.gameRegister.findByGameId(Long.valueOf(scoreDto.getGameId()));
+        User user = userRegister.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found"));
 
-        LOG.info("current game is {} for username: {}", currentGame.orElseThrow().getGameId(), username);
+        Game game = this.gameRegister.findByGameId(scoreDto.getGameId())
+                .orElseThrow(() -> new InvalidJwtAuthenticationException("Game not found"));
+
+        if (!game.getUser().getUserId().equals(user.getUserId())) {
+            throw new InvalidJwtAuthenticationException("Game does not belong to user");
+        }
+
+        LOG.info("current game is {} for username: {}", game.getGameId(), username);
         Score score = new Score();
-        score.setScore(Long.valueOf(scoreDto.getScore()));
-        score.setCreatedAt(LocalDateTime.now());
-        score.setGame_id(Long.valueOf(scoreDto.getGameId()));
+        score.setScore(scoreDto.getScore());
+        LocalDateTime now = LocalDateTime.now();
+        score.setCreatedAt(now);
+        score.setUpdatedAt(now);
+        score.setGame_id(scoreDto.getGameId());
         LOG.info("updating score: {} gameId: {}", scoreDto.getScore(), scoreDto.getGameId());
         this.scoreRegister.save(score);
 
-        Game updatedGame = currentGame
-                .map(game -> {
-                    game.setScoreId(score);
-                    return this.gameRegister.save(game);
-                })
-                .orElse(null);  // Or throw an exception, or handle the absence in another way
-
-        if (updatedGame != null) {
-            // Game was found and updated
-        } else {
-            // Game was not found
-        }
+        game.setScoreId(score);
+        this.gameRegister.save(game);
 
         return score;
     }

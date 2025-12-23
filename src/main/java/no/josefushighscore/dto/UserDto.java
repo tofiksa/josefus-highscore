@@ -1,7 +1,9 @@
 package no.josefushighscore.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import no.josefushighscore.model.User;
 
 import java.time.LocalDateTime;
@@ -10,18 +12,24 @@ import java.time.LocalDateTime;
 public class UserDto {
 
     @JsonProperty("username")
+    @NotBlank
     private String username;
 
     @JsonProperty("password")
+    @NotBlank
+    @Size(min = 8)
     private String password;
 
     @JsonProperty("firstname")
+    @NotBlank
     private String firstname;
 
     @JsonProperty("lastname")
+    @NotBlank
     private String lastname;
 
     @NotBlank
+    @Email
     @JsonProperty("email")
     private String email;
 

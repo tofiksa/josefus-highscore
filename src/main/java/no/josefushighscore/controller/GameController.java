@@ -1,5 +1,6 @@
 package no.josefushighscore.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -7,10 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.josefushighscore.dto.ScoreDto;
 import no.josefushighscore.exception.BadRequestException;
 import no.josefushighscore.exception.InvalidJwtAuthenticationException;
+import no.josefushighscore.model.Game;
+import no.josefushighscore.model.Score;
 import no.josefushighscore.service.GameService;
 import no.josefushighscore.service.RankService;
 import no.josefushighscore.service.ScoreService;
-import no.josefushighscore.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -24,9 +27,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/game")
 public class GameController {
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private GameService gameService;
@@ -43,7 +43,7 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @GetMapping("/id")
-    public ResponseEntity getGameId(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+    public ResponseEntity<Game> getGameId(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(gameService.getGameDetails(userDetails.getUsername()));
     }
 
@@ -53,7 +53,7 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @PostMapping("/score")
-    public ResponseEntity postScore(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ScoreDto scoreDto) throws InvalidJwtAuthenticationException {
+    public ResponseEntity<Score> postScore(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ScoreDto scoreDto) throws InvalidJwtAuthenticationException {
         return ok(gameService.updateScore(userDetails.getUsername(), scoreDto));
     }
 
@@ -63,7 +63,7 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @GetMapping("/score")
-    public ResponseEntity getTotalScoreForUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+    public ResponseEntity<ObjectNode> getTotalScoreForUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(scoreService.getTotalScoreForUser(userDetails.getUsername()));
     }
 
@@ -73,7 +73,7 @@ public class GameController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @GetMapping("/ranking")
-    public ResponseEntity getTopTenPlayers() throws BadRequestException {
+    public ResponseEntity<ObjectNode> getTopTenPlayers() throws BadRequestException {
         return ok(rankService.getTopTenPlayers());
     }
 }

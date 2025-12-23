@@ -36,7 +36,7 @@ public class UserInfoController {
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+    public ResponseEntity<?> currentUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(userService.getUserDetails(userDetails.getUsername()));
     }
 
@@ -60,7 +60,7 @@ public class UserInfoController {
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/rank")
-    public ResponseEntity getRank(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
+    public ResponseEntity<?> getRank(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
         return ok(userService.getUserDetails(userDetails.getUsername()));
     }
 
