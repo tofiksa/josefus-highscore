@@ -2,7 +2,6 @@ package no.josefushighscore.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import no.josefushighscore.register.UserRegister;
@@ -12,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,16 +72,16 @@ public class JwtService {
     ) {
         return Jwts
                 .builder()
-                .setHeaderParam("typ","JWT")
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .claim("roles",userRegister.findByUsername(userDetails.getUsername()).orElseThrow(
+                .header().add("typ", "JWT").and()
+                .claims(extraClaims)
+                .subject(userDetails.getUsername())
+                .claim("roles", userRegister.findByUsername(userDetails.getUsername()).orElseThrow(
                                 () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getRoles())
-                .claim("email", userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getEmail())
+                .claim("email", userRegister.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getEmail())
                 .claim("name", getFullname(userDetails))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey())
                 .compact();
     }
 
@@ -91,8 +90,8 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    private String getFullname (UserDetails userDetails) {
-        return userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getFirstname() + " " + userRegister.findByUsername(userDetails.getUsername()).orElseThrow( () -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getLastname();
+    private String getFullname(UserDetails userDetails) {
+        return userRegister.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getFirstname() + " " + userRegister.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username " + userDetails.getUsername() + " not found")).getLastname();
     }
 
     private boolean isTokenExpired(String token) {
@@ -105,14 +104,14 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
+                .parser()
+                .verifyWith(getSignInKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    private Key getSignInKey() {
+    private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
