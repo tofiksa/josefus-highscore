@@ -28,13 +28,11 @@ public class SecurityTestConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
-                .httpBasic().disable()
-                .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .anyRequest().authenticated().and()
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtTokenProvider, UsernamePasswordAuthenticationFilter.class);
 
@@ -50,8 +48,5 @@ public class SecurityTestConfiguration {
         basicUser.setRoles(Arrays.asList("ROLE_ANONYMOUS"));
 
         return new InMemoryUserDetailsManager(basicUser);
-
     }
 }
-
-
