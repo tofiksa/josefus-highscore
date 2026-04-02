@@ -2,9 +2,6 @@ server:
   port: 8080
 
 spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
   main:
     allow-circular-references: true
   jackson:
