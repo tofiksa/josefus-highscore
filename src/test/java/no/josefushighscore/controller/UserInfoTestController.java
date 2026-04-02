@@ -6,7 +6,7 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,7 +25,7 @@ public class UserInfoTestController {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     JwtAuthenticationFilter jwtTokenProvider;
 
     @Test

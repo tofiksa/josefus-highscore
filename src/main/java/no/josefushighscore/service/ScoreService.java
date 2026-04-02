@@ -46,7 +46,7 @@ public class ScoreService {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
         response.put("totalScore", totalScore);
-        response.put("gameStats",getHighestAndLowestScores(getAllGamesForUser));
+        response.set("gameStats",getHighestAndLowestScores(getAllGamesForUser));
 
         return response;
     }

@@ -137,7 +137,7 @@ public class AuthenticationService {
         } catch (Exception e) {
             // Log the specific error for debugging
             LOG.error("Refresh token error: {}", e.getMessage(), e);
-            throw new BadRequestException("JWT signature verification failed: " + e.getMessage(), (List<Error>) e);
+            throw new BadRequestException("JWT signature verification failed: " + e.getMessage(), null);
         }
     }
 
