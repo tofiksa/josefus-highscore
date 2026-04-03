@@ -29,3 +29,7 @@ hs_err_pid*
 .vscode/
 .cursor/
 target
+.classpath
+.factorypath
+.project
+.settings
