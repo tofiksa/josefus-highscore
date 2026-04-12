@@ -48,11 +48,9 @@ public class SecurityConfiguration {
                                 .maxAgeInSeconds(31536000))
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**",
                                 "/swagger-resources", "/v3/api-docs/*", "/v3/api-docs")
                         .permitAll()
-                        .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/game/ranking").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

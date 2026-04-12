@@ -70,6 +70,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())).body(apiResponse);
     }
 
+    @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<APIResponse> handleBadRequestException(BadRequestException e){
         HashMap<String, String> errors = new HashMap<>();
@@ -82,6 +83,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())).body(apiResponse);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<APIResponse> handleAccessDeniedException(AuthenticationException e){
 
@@ -95,7 +97,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<APIResponse> handleBadCredentialsException(BadCredentialsException e){
 
@@ -110,7 +112,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<APIResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
 
@@ -125,9 +127,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
-
-
-    @ExceptionHandler
+    @ExceptionHandler(SignatureException.class)
     public ResponseEntity<APIResponse> handleSignatureException(SignatureException e){
 
         HashMap<String, String> errors = new HashMap<>();
@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ServletException.class)
     public ResponseEntity<APIResponse> handleServletException(ServletException e){
 
         HashMap<String, String> errors = new HashMap<>();
@@ -154,7 +154,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
     public ResponseEntity<APIResponse> handleInvalidJwtAuthenticationException(InvalidJwtAuthenticationException e){
 
         HashMap<String, String> errors = new HashMap<>();
@@ -167,9 +167,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<APIResponse> handleExpiredJwtException(ExpiredJwtException e){
-
 
         HashMap<String, String> errors = new HashMap<>();
         errors.put("errors",e.getMessage());
@@ -180,8 +179,4 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatusCode.valueOf(apiResponse.getStatus().value())).body(apiResponse);
     }
-
-
-
 }
-

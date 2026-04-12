@@ -1,12 +1,12 @@
 package no.josefushighscore.controller;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.josefushighscore.dto.GameDto;
-import no.josefushighscore.exception.InvalidJwtAuthenticationException;
 import no.josefushighscore.service.GameService;
-import no.josefushighscore.service.UserService;
+import no.josefushighscore.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -23,23 +23,10 @@ import static org.springframework.http.ResponseEntity.ok;
 public class UserInfoController {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private GameService gameService;
 
-
-
-    @Operation(summary = "Get current user details", description = "Retrieve details of the currently authenticated user", responses = {
-        @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDetails.class))),
-        @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/me")
-    public ResponseEntity<?> currentUser(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
-        return ok(userService.getUserDetails(userDetails.getUsername()));
-    }
-
+    @Autowired
+    private ScoreService scoreService;
 
     @Operation(summary = "Get all games", description = "Retrieve all games for the authenticated user", responses = {
         @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))),
@@ -53,16 +40,13 @@ public class UserInfoController {
         return ResponseEntity.ok(games);
     }
 
-
     @Operation(summary = "Get user rank", description = "Retrieve the rank of the authenticated user", responses = {
         @ApiResponse(responseCode = "200", description = "Successful retrieval", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDetails.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/rank")
-    public ResponseEntity<?> getRank(@AuthenticationPrincipal UserDetails userDetails) throws InvalidJwtAuthenticationException {
-        return ok(userService.getUserDetails(userDetails.getUsername()));
+    public ResponseEntity<?> getRank(@AuthenticationPrincipal UserDetails userDetails) {
+        return ok(scoreService.getTotalScoreForUser(userDetails.getUsername()));
     }
-
-
 }

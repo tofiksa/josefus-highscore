@@ -12,7 +12,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,12 +28,11 @@ public class UserInfoTestController {
     JwtAuthenticationFilter jwtTokenProvider;
 
     @Test
-    @DisplayName("Test get userinfo")
+    @DisplayName("Test get games")
     @WithUserDetails("basicUser")
-    public void testGetUserinfo() throws Exception {
+    public void testGetGames() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/me"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("basicUser"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/games"))
+                .andExpect(status().isOk());
     }
 }

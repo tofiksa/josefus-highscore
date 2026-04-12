@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.josefushighscore.dto.UserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -120,16 +119,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
-    }
-
-    public UserDto toDto() {
-        UserDto userDto = new UserDto();
-        userDto.setUsername(this.getUsername());
-        userDto.setFirstname(this.getFirstname());
-        userDto.setLastname(this.getLastname());
-        userDto.setEmail(this.getEmail());
-        userDto.setLastSignedIn(this.getLastSignedIn());
-        return userDto;
     }
 
     @Override
