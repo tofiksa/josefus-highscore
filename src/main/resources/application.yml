@@ -14,13 +14,16 @@ spring:
       ACCEPT_SINGLE_VALUE_AS_ARRAY: true
     default-property-inclusion: non_empty
   datasource:
-    url: ${SUPABASE_JOSEFUS_DB_URL}
+    url: ${SUPABASE_JOSEFUS_DB_URL}&prepareThreshold=0
     username: ${SUPABASE_JOSEFUS_DB_USER}
     password: ${SUPABASE_JOSEFUS_DB_PWD}
-    cachePrepStmts: true
-    prepStmtCacheSize: 250
-    prepStmtCacheSqlLimit: 2048
-    useServerPrepStmts: true
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
   flyway:
     url: ${spring.datasource.url}
     default-schema: josefushighscore
