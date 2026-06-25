@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**",
-                                "/swagger-resources", "/v3/api-docs/*", "/v3/api-docs")
+                                "/swagger-resources", "/v3/api-docs/*", "/v3/api-docs", "/actuator/**")
                         .permitAll()
                         .requestMatchers("/game/ranking").permitAll()
                         .anyRequest().authenticated())
